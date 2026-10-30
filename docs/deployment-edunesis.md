@@ -22,7 +22,8 @@ Image diberi tag `rumahpayung:<full-sha>`; tag lama dipertahankan untuk rollback
 deploy/deploy.sh                  # build HEAD yang sudah di-commit, backup, ganti app, health gate, auto-rollback
 deploy/rollback.sh <full-sha>     # kembali ke image lama (schema DB tidak dibalik)
 deploy/backup.sh                  # snapshot SQLite online + arsip uploads di data/backups
-sudo docker compose -p rumahpayung-dev -f compose.dev.yaml restart app   # restart hanya app (RELEASE_SHA wajib di-export)
+sudo docker restart rumahpayung-dev-app-1   # restart hanya app
+
 sudo docker logs --tail 100 rumahpayung-dev-app-1
 ```
 

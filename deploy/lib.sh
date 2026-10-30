@@ -6,7 +6,11 @@ BASE_DIR="${BASE_DIR:-/opt/rumahpayung-dev}"
 export DATA_DIR="${DATA_DIR:-$BASE_DIR/data}"
 export ENV_FILE="${ENV_FILE:-$BASE_DIR/runtime.env}"
 RELEASES_FILE="$BASE_DIR/releases.log"
-DC() { sudo docker compose -p rumahpayung-dev -f "$REPO_DIR/compose.dev.yaml" "$@"; }
+# sudo resets the environment, so pass the compose variables explicitly.
+DC() {
+  sudo env RELEASE_SHA="${RELEASE_SHA:-}" DATA_DIR="$DATA_DIR" ENV_FILE="$ENV_FILE" \
+    docker compose -p rumahpayung-dev -f "$REPO_DIR/compose.dev.yaml" "$@"
+}
 
 running_sha() {
   sudo docker inspect --format '{{.Config.Image}}' rumahpayung-dev-app-1 2>/dev/null | sed 's/^rumahpayung://' || true
