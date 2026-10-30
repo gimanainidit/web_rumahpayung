@@ -1,0 +1,16 @@
+{
+  "name": "RumahPayung MVP",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-24-bookworm",
+  "containerEnv": {
+    "HOST": "0.0.0.0"
+  },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "RumahPayung MVP",
+      "onAutoForward": "notify",
+      "protocol": "http"
+    }
+  },
+  "postCreateCommand": "npm ci && npm run admin:ensure && npm run build"
+}
