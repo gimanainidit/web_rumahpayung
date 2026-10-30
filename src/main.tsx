@@ -18,18 +18,19 @@ import {
 import { Admin, AdminLogin } from './Admin';
 import { attribution } from './api';
 import './styles.css';
+import './storefront.css';
 function Layout() {
   return (
-    <>
+    <div className="storefront">
       <a className="skip-link" href="#content">
         Lewati ke konten
       </a>
       <Header />
-      <div id="content">
+      <div id="content" tabIndex={-1}>
         <Outlet />
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
 function Scroll() {
@@ -37,8 +38,9 @@ function Scroll() {
   useEffect(() => {
     window.scrollTo(0, 0);
     attribution();
+    document.getElementById('content')?.focus({ preventScroll: true });
     const titles: Record<string, string> = {
-      '/': 'Payung untuk setiap cerita',
+      '/': 'Merchandise dengan makna',
       '/katalog': 'Katalog produk',
       '/payung-custom': 'Payung custom perusahaan',
       '/penawaran': 'Minta penawaran',
@@ -48,7 +50,7 @@ function Scroll() {
     };
     document.title =
       (titles[pathname] || (pathname.startsWith('/admin') ? 'Ruang tim' : 'RumahPayung')) +
-      ' | RumahPayung';
+      ' | RUMAH Payung';
   }, [pathname]);
   return null;
 }

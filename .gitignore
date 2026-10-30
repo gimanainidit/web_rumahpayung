@@ -7,3 +7,6 @@ dist/
 playwright-report/
 test-results/
 *.sqlite*
+
+# Installed project-local design guidance (version recorded in skills-lock.json)
+.agents/

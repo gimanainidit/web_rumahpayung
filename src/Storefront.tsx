@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
@@ -16,7 +16,15 @@ import {
   Download,
 } from 'lucide-react';
 import { useStore } from './store';
-import { ProductCard, Benefits, WhatsAppButton, ErrorBox, Empty } from './components';
+import {
+  ProductCard,
+  Benefits,
+  WhatsAppButton,
+  ErrorBox,
+  Empty,
+  EditorialImage,
+  Field,
+} from './components';
 import { api, attribution } from './api';
 import {
   businessDate,
@@ -30,146 +38,144 @@ import {
 export function Home() {
   const { products } = useStore();
   return (
-    <>
-      <section className="hero container">
-        <div className="hero-copy">
-          <div className="eyebrow">
-            <span /> YOUR BRAND, EVERYWHERE.
-          </div>
+    <main className="home-page">
+      <section className="home-hero container">
+        <div className="home-hero-copy">
+          <span className="eyebrow">UNTUK CERITA YANG INGIN ANDA BAGIKAN</span>
           <h1>
-            Payung untuk
+            Merchandise
             <br />
-            setiap <em>cerita.</em>
+            dengan <span>makna.</span>
           </h1>
           <p>
-            Dari acara perusahaan hingga hadiah yang berkesan.
-            <br className="desktop" /> Wujudkan identitas brand Anda lewat payung custom
-            <br className="desktop" /> dan merchandise yang tepat.
+            Payung dan merchandise yang membawa identitas Anda. Untuk tim, acara, dan hadiah yang
+            lebih personal.
           </p>
           <div className="hero-actions">
             <Link className="button" to="/penawaran">
-              Buat payung custom <ArrowUpRight size={18} />
+              Minta penawaran custom <ArrowUpRight size={20} aria-hidden="true" />
             </Link>
             <Link className="text-link" to="/katalog">
-              Jelajahi katalog <ArrowRight size={17} />
+              Belanja satuan <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>
-          <div className="hero-caption">
-            <span className="mini-line" /> PILIH MODEL. TAMBAHKAN IDENTITAS. BERI MAKNA.
+          <p className="hero-retail-note">
+            Belanja satuan tanpa cetak.
+            <br />
+            Kebutuhan logo dan jumlah besar melalui penawaran.
+          </p>
+          <div className="hero-signature">
+            <span className="signature-line" /> PILIH DENGAN HATI. BERI IDENTITAS.
           </div>
         </div>
-        <div className="hero-art">
-          <div className="hero-circle" />
-          <span className="vertical-type">MADE FOR YOUR NEXT CHAPTER</span>
-          <img className="hero-back" src="/images/cream.svg" alt="Ilustrasi payung cream" />
-          <img
-            className="hero-front"
-            src="/images/navy.svg"
-            alt="Ilustrasi payung navy custom logo"
-          />
-          <div className="hero-tag">
-            <span>
-              Ruang untuk
-              <br />
-              <strong>brand Anda.</strong>
-            </span>
-            <ArrowUpRight size={26} />
-          </div>
-          <div className="hero-footnote">
-            01 / CUSTOM COLLECTION <span>Ilustrasi desain</span>
-          </div>
-        </div>
+        <EditorialImage className="home-hero-image" priority />
       </section>
       <Benefits />
-      <section className="section container">
+      <section className="section container home-products">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">TEMUKAN YANG SESUAI</span>
-            <h2>Satu kebutuhan. Banyak pilihan.</h2>
+            <span className="eyebrow">PILIHAN PAYUNG</span>
+            <h2>Awal dari cerita Anda.</h2>
           </div>
-          <Link to="/katalog" className="text-link">
-            Semua kategori <ArrowRight size={18} />
-          </Link>
-        </div>
-        <div className="category-grid">
-          {[
-            ['Payung', 'Untuk segala cuaca', 'navy'],
-            ['Tumbler', 'Temani setiap aktivitas', 'tumbler'],
-            ['Tas', 'Bawa cerita lebih jauh', 'bag'],
-          ].map(([name, sub, img]) => (
-            <Link key={name} to={'/katalog?kategori=' + name} className="category">
-              <div>
-                <h3>{name}</h3>
-                <p>{sub}</p>
-                <ArrowUpRight size={21} />
-              </div>
-              <img src={'/images/' + img + '.svg'} alt={name} />
-            </Link>
-          ))}
-        </div>
-      </section>
-      <section className="section container">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">MULAI DARI SINI</span>
-            <h2>Pilihan untuk brand Anda.</h2>
-          </div>
-          <Link className="text-link" to="/katalog">
-            Lihat semua produk <ArrowRight size={18} />
+          <Link className="text-link" to="/katalog?kategori=Payung">
+            Lihat semua payung <ArrowRight size={18} aria-hidden="true" />
           </Link>
         </div>
         <div className="product-grid">
-          {products.slice(0, 4).map((p) => (
-            <ProductCard key={p.id} p={p} />
-          ))}
+          {products
+            .filter((p) => p.category === 'Payung')
+            .slice(0, 4)
+            .map((p) => (
+              <ProductCard key={p.id} p={p} />
+            ))}
         </div>
         <p className="section-note">
-          Harga satuan sebelum custom. Pilihan bahan, cetak, dan jumlah dikonfirmasi dalam
-          penawaran.
+          Harga satuan tanpa cetak. Untuk custom logo, bahan, dan jumlah, minta penawaran sesuai
+          kebutuhan Anda.
         </p>
       </section>
-      <section className="container business-banner">
-        <div>
-          <span className="eyebrow">UNTUK PERUSAHAAN & ORGANISASI</span>
+      <section className="brand-story container">
+        <div className="story-visual">
+          <img
+            src="/images/editorial/umbrella-detail.webp"
+            width="800"
+            height="900"
+            alt="Visual konsep detail kain dan panel payung navy"
+            loading="lazy"
+          />
+          <span>DETAIL YANG MEMBAWA CERITA · VISUAL KONSEP</span>
+        </div>
+        <div className="story-copy">
+          <span className="eyebrow">SEBUAH BENDA. SEBUAH PESAN.</span>
           <h2>
-            Brand Anda.
+            Yang dibawa pulang,
             <br />
-            Kesan yang bertahan.
+            yang terus diingat.
           </h2>
           <p>
-            Event, welcome kit, atau apresiasi pelanggan.
-            <br />
-            Kami bantu petakan pilihan sesuai jumlah dan anggaran.
+            Untuk menyambut anggota tim, merayakan pertemuan, atau mengucapkan terima kasih. Pilih
+            merchandise yang terasa dekat dengan orang yang menerimanya.
           </p>
-          <Link to="/payung-custom" className="button">
-            Temukan solusi custom <ArrowUpRight size={18} />
+          <div className="story-use-cases">
+            <span>01 / Apresiasi pelanggan</span>
+            <span>02 / Acara & komunitas</span>
+            <span>03 / Kebutuhan tim</span>
+          </div>
+          <Link to="/payung-custom" className="text-link">
+            Temukan pilihan custom <ArrowUpRight size={19} aria-hidden="true" />
           </Link>
         </div>
-        <div className="banner-art">
-          <img src="/images/green.svg" alt="Ilustrasi payung custom hijau" />
-          <span>
-            Make it
-            <br />
-            <em>yours.</em>
-          </span>
+      </section>
+      <section className="section container category-section">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">LENGKAPI PILIHAN ANDA</span>
+            <h2>Banyak bentuk. Satu maksud baik.</h2>
+          </div>
+        </div>
+        <div className="category-grid">
+          {[
+            ['Payung', 'Naungan untuk setiap perjalanan', 'navy'],
+            ['Tumbler', 'Teman di sela aktivitas', 'tumbler'],
+            ['Tas', 'Ruang untuk yang berarti', 'bag'],
+          ].map(([name, sub, img]) => (
+            <Link key={name} to={'/katalog?kategori=' + name} className="category">
+              <div>
+                <span className="eyebrow">KOLEKSI</span>
+                <h3>{name}</h3>
+                <p>{sub}</p>
+                <ArrowUpRight size={22} aria-hidden="true" />
+              </div>
+              <img src={'/images/' + img + '.svg'} alt={'Ilustrasi ' + name} loading="lazy" />
+              <span className="category-image-note">Ilustrasi produk</span>
+            </Link>
+          ))}
         </div>
       </section>
       <Process />
       <section className="container faq-section">
         <div>
-          <span className="eyebrow">SEBELUM MULAI</span>
+          <span className="eyebrow">SEBELUM MEMULAI</span>
           <h2>
-            Ada yang ingin
+            Hal kecil yang
             <br />
-            Anda ketahui?
+            perlu Anda tahu.
           </h2>
-          <Link className="text-link" to="/penawaran">
-            Tanyakan kebutuhan Anda <ArrowUpRight size={17} />
-          </Link>
+          <p>Kami ingin Anda memesan dengan informasi yang jelas.</p>
         </div>
         <Faq />
       </section>
-    </>
+      <section className="closing-cta">
+        <div className="container">
+          <span className="eyebrow">MARI WUJUDKAN BERSAMA</span>
+          <h2>Apa cerita Anda berikutnya?</h2>
+          <p>Ceritakan kebutuhan, jumlah, dan anggaran Anda. Kita mulai dari sana.</p>
+          <Link to="/penawaran" className="button">
+            Minta penawaran <ArrowUpRight size={20} aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }
 function Process() {
@@ -220,7 +226,7 @@ function Faq() {
         ],
         [
           'Apakah bisa menyesuaikan anggaran?',
-          'Sampaikan jumlah dan anggaran Anda. Tim akan mempertimbangkan spesifikasi dan pilihan cetak dengan batas harga serta margin yang telah ditetapkan.',
+          'Sampaikan jumlah dan anggaran Anda. Tim akan membantu mempertimbangkan pilihan produk, bahan, dan cetak yang sesuai.',
         ],
         [
           'Berapa lama proses produksi dan pengiriman?',
@@ -244,14 +250,14 @@ function Faq() {
 }
 export function CustomLanding() {
   return (
-    <>
+    <main>
       <section className="container custom-hero">
         <div>
-          <span className="eyebrow">PAYUNG CUSTOM • CORPORATE MERCHANDISE</span>
+          <span className="eyebrow">UNTUK PERUSAHAAN, TIM & ACARA</span>
           <h1>
-            Identitas Anda,
+            Identitas Anda.
             <br />
-            di setiap <em>cuaca.</em>
+            Dibawa ke mana saja.
           </h1>
           <p>
             Supplier payung custom untuk event, souvenir, dan kebutuhan perusahaan. Mulai dari
@@ -264,12 +270,12 @@ export function CustomLanding() {
             <WhatsAppButton />
           </div>
           <div className="use-cases">
-            <span>Corporate gifts</span>
+            <span>Hadiah perusahaan</span>
             <span>Event & promosi</span>
-            <span>Welcome kit</span>
+            <span>Paket sambutan tim</span>
           </div>
         </div>
-        <img src="/images/navy.svg" alt="Ilustrasi desain payung dengan logo brand" />
+        <EditorialImage priority />
       </section>
       <Benefits />
       <section className="section container">
@@ -306,7 +312,7 @@ export function CustomLanding() {
           Ceritakan kebutuhan Anda <ArrowRight size={18} />
         </Link>
       </div>
-    </>
+    </main>
   );
 }
 export function Catalog() {
@@ -314,6 +320,19 @@ export function Catalog() {
     [params, setParams] = useSearchParams();
   const category = params.get('kategori') || '',
     q = params.get('q') || '';
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const filterToggle = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const close = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setFiltersOpen(false);
+        filterToggle.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', close);
+    return () => document.removeEventListener('keydown', close);
+  }, [filtersOpen]);
   const [sort, setSort] = useState('default'),
     [max, setMax] = useState(250000),
     [stock, setStock] = useState(false),
@@ -342,8 +361,22 @@ export function Catalog() {
           <p>Temukan awal yang tepat untuk merchandise Anda.</p>
         </div>
       </div>
+      <button
+        ref={filterToggle}
+        className="filter-toggle"
+        aria-expanded={filtersOpen}
+        aria-controls="catalog-filters"
+        onClick={() => setFiltersOpen(!filtersOpen)}
+      >
+        <SlidersHorizontal size={18} aria-hidden="true" />
+        {filtersOpen ? 'Tutup filter' : 'Filter produk'}
+      </button>
       <div className="catalog-layout">
-        <aside className="filters">
+        <aside
+          id="catalog-filters"
+          aria-label="Filter produk"
+          className={'filters ' + (filtersOpen ? 'is-open' : '')}
+        >
           <h3>
             <SlidersHorizontal size={18} /> Filter produk
           </h3>
@@ -351,6 +384,7 @@ export function Catalog() {
           {['', 'Payung', 'Tumbler', 'Tas'].map((c) => (
             <button
               className={category === c ? 'filter-choice selected' : 'filter-choice'}
+              aria-pressed={category === c}
               key={c}
               onClick={() => {
                 const p = new URLSearchParams(params);
@@ -378,6 +412,17 @@ export function Catalog() {
             <input type="checkbox" checked={stock} onChange={(e) => setStock(e.target.checked)} />{' '}
             Stok tersedia
           </label>
+          <button
+            className="link-button filter-reset"
+            onClick={() => {
+              setParams({});
+              setMax(250000);
+              setStock(false);
+              setSort('default');
+            }}
+          >
+            Reset semua filter
+          </button>
           <div className="filter-help">
             <FileText size={25} />
             <h4>Pesan dalam jumlah besar?</h4>
@@ -389,7 +434,7 @@ export function Catalog() {
         </aside>
         <div>
           <div className="catalog-toolbar">
-            <p>
+            <p role="status" aria-live="polite">
               {filtered.length} produk{' '}
               {q && (
                 <>
@@ -433,6 +478,8 @@ export function Catalog() {
                 <button
                   key={i}
                   className={page === i + 1 ? 'active' : ''}
+                  aria-current={page === i + 1 ? 'page' : undefined}
+                  aria-label={'Halaman ' + (i + 1)}
                   onClick={() => setPage(i + 1)}
                 >
                   {i + 1}
@@ -479,7 +526,7 @@ export function ProductDetail() {
           </span>
         </div>
         <div className="detail-info">
-          <span className="eyebrow">{p.category.toUpperCase()} / CUSTOM COLLECTION</span>
+          <span className="eyebrow">{p.category.toUpperCase()} / KOLEKSI RUMAH PAYUNG</span>
           <h1>{p.name}</h1>
           <p>{p.description}</p>
           <div className="detail-price">
@@ -502,6 +549,7 @@ export function ProductDetail() {
               <button
                 key={c.id}
                 aria-label={c.label}
+                aria-pressed={v.id === c.id}
                 title={c.label}
                 className={v.id === c.id ? 'chosen' : ''}
                 onClick={() => setVariant(c.id)}
@@ -579,20 +627,30 @@ export function QuoteForm() {
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
     [success, setSuccess] = useState('');
+  const [estimateState, setEstimateState] = useState<'idle' | 'loading' | 'error' | 'ready'>(
+    'idle',
+  );
+  const [estimateRetry, setEstimateRetry] = useState(0);
   const p = products.find((p) => p.id === productId);
   useEffect(() => {
     let live = true;
     setQuote(null);
+    setEstimateState(p && quantity >= p.moq ? 'loading' : 'idle');
     if (p && quantity >= p.moq)
       api<Omit<Quote, 'cost' | 'margin'>>('/estimate', 'POST', { productId, quantity })
         .then((q) => {
-          if (live) setQuote(q);
+          if (live) {
+            setQuote(q);
+            setEstimateState('ready');
+          }
         })
-        .catch(() => {});
+        .catch(() => {
+          if (live) setEstimateState('error');
+        });
     return () => {
       live = false;
     };
-  }, [productId, quantity, p?.moq]);
+  }, [productId, quantity, p?.moq, estimateRetry]);
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
@@ -663,9 +721,12 @@ export function QuoteForm() {
       </div>
       <div className="quote-layout">
         <form onSubmit={submit} className="panel quote-form">
-          <h2>Detail kebutuhan</h2>
+          <h2>Mari kenalan.</h2>
+          <p className="form-intro">
+            Kontak ini digunakan untuk membahas kebutuhan dan penawaran Anda.
+          </p>
           <div className="form-grid">
-            <label>
+            <Field>
               Nama perusahaan
               <input
                 name="company"
@@ -674,8 +735,8 @@ export function QuoteForm() {
                 maxLength={160}
                 placeholder="PT / organisasi Anda"
               />
-            </label>
-            <label>
+            </Field>
+            <Field>
               Nama PIC
               <input
                 name="name"
@@ -684,16 +745,20 @@ export function QuoteForm() {
                 maxLength={160}
                 placeholder="Nama lengkap"
               />
-            </label>
-            <label>
+            </Field>
+            <Field>
               Nomor WhatsApp
               <input name="phone" required type="tel" placeholder="08xxxxxxxxxx" />
-            </label>
-            <label>
+            </Field>
+            <Field>
               Email (opsional)
               <input name="email" type="email" placeholder="nama@perusahaan.com" />
-            </label>
-            <label>
+            </Field>
+            <div className="form-section-title span-2">
+              <span>02</span>
+              <h2>Rencanakan kebutuhan.</h2>
+            </div>
+            <Field>
               Produk
               <select value={productId} onChange={(e) => setProduct(e.target.value)}>
                 {products.map((p) => (
@@ -702,8 +767,8 @@ export function QuoteForm() {
                   </option>
                 ))}
               </select>
-            </label>
-            <label>
+            </Field>
+            <Field>
               Jumlah kebutuhan (pcs)
               <input
                 type="number"
@@ -714,8 +779,12 @@ export function QuoteForm() {
                 onChange={(e) => setQuantity(+e.target.value)}
               />
               <small>Minimum custom {p?.moq || '—'} pcs</small>
-            </label>
-            <label>
+            </Field>
+            <div className="form-section-title span-2">
+              <span>03</span>
+              <h2>Anggaran & waktu.</h2>
+            </div>
+            <Field>
               Anggaran total (opsional)
               <input
                 name="budget"
@@ -724,12 +793,12 @@ export function QuoteForm() {
                 max="1000000000"
                 placeholder="Contoh: 15000000"
               />
-            </label>
-            <label>
+            </Field>
+            <Field>
               Tanggal dibutuhkan
               <input name="deadline" type="date" required min={businessDate()} />
-            </label>
-            <label className="span-2">
+            </Field>
+            <Field className="span-2">
               Ceritakan kebutuhan Anda
               <textarea
                 name="notes"
@@ -737,7 +806,7 @@ export function QuoteForm() {
                 rows={4}
                 placeholder="Kebutuhan acara, warna, cetak logo, alamat tujuan, atau hal lain yang perlu kami ketahui."
               />
-            </label>
+            </Field>
           </div>
           <label className="check-label">
             <input type="checkbox" name="consent" required />
@@ -777,7 +846,24 @@ export function QuoteForm() {
                 </div>
               </>
             ) : (
-              <p>Masukkan jumlah sesuai minimum untuk melihat estimasi.</p>
+              <div role="status" aria-live="polite">
+                {estimateState === 'loading' ? (
+                  <p>Menghitung estimasi…</p>
+                ) : estimateState === 'error' ? (
+                  <>
+                    <p>Estimasi belum dapat dimuat. Anda tetap dapat mengajukan kebutuhan.</p>
+                    <button
+                      type="button"
+                      className="link-button"
+                      onClick={() => setEstimateRetry((n) => n + 1)}
+                    >
+                      Coba estimasi lagi
+                    </button>
+                  </>
+                ) : (
+                  <p>Masukkan jumlah sesuai minimum untuk melihat estimasi.</p>
+                )}
+              </div>
             )}
             <p className="small">
               {settings.demo ? 'Harga simulasi, belum diverifikasi owner. ' : ''}Estimasi mencakup
@@ -974,30 +1060,30 @@ export function CheckoutPage() {
         <div className="panel">
           <h2>Informasi penerima</h2>
           <div className="form-grid">
-            <label>
+            <Field>
               Nama lengkap
               <input name="name" required minLength={2} />
-            </label>
-            <label>
+            </Field>
+            <Field>
               Nomor WhatsApp
               <input name="phone" type="tel" required />
-            </label>
-            <label className="span-2">
+            </Field>
+            <Field className="span-2">
               Email (opsional)
               <input name="email" type="email" />
-            </label>
-            <label className="span-2">
+            </Field>
+            <Field className="span-2">
               Alamat lengkap
               <textarea name="address" required minLength={10} rows={3} />
-            </label>
-            <label>
+            </Field>
+            <Field>
               Kota
               <input name="city" required minLength={2} />
-            </label>
-            <label>
+            </Field>
+            <Field>
               Kode pos
               <input name="postalCode" required pattern="[0-9]{5}" inputMode="numeric" />
-            </label>
+            </Field>
           </div>
           <h2>Pengiriman</h2>
           {(
@@ -1325,8 +1411,8 @@ export function InfoPage({ privacy = false }: { privacy?: boolean }) {
       ) : (
         <>
           <p className="lead-text">
-            RumahPayung membantu perusahaan dan organisasi menemukan payung custom serta merchandise
-            sesuai kebutuhan dan anggaran.
+            RUMAH Payung membantu perusahaan dan organisasi menemukan payung custom serta
+            merchandise sesuai kebutuhan dan anggaran.
           </p>
           <h2>Dimulai dari percakapan.</h2>
           <p>

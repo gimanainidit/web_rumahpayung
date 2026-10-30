@@ -68,8 +68,8 @@ export function Provider({ children }: { children: ReactNode }) {
     );
   if (!data)
     return (
-      <div className="center">
-        <span className="spinner" /> Memuat RumahPayung…
+      <div className="center" role="status" aria-live="polite">
+        <span className="spinner" aria-hidden="true" /> Memuat RUMAH Payung…
       </div>
     );
   const add = (p: PublicProduct, variantId: string, q = 1) => {

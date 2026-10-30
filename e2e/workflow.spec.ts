@@ -118,7 +118,7 @@ test('desktop visual evidence and no client errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Payung untuk setiap cerita.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Merchandise dengan makna.' })).toBeVisible();
   await page.screenshot({ path: '.local/screenshots/home-desktop.png', fullPage: true });
   await login(page);
   await page.goto('/admin/crm');
@@ -127,7 +127,18 @@ test('desktop visual evidence and no client errors', async ({ page }) => {
 });
 test('core pages meet automated WCAG A/AA accessibility checks', async ({ page }) => {
   const { default: AxeBuilder } = await import('@axe-core/playwright');
-  for (const path of ['/', '/penawaran', '/admin/login']) {
+  for (const path of [
+    '/',
+    '/katalog',
+    '/produk/payung-golf',
+    '/penawaran',
+    '/checkout',
+    '/admin/login',
+  ]) {
+    if (path === '/checkout') {
+      await page.goto('/produk/payung-golf');
+      await page.getByRole('button', { name: 'Tambah ke keranjang' }).click();
+    }
     await page.goto(path);
     const result = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
@@ -167,4 +178,72 @@ test('admin uploads a photo, which persists after reload and is served as WebP',
   const response = await page.request.get(url!);
   expect(response.status()).toBe(200);
   expect(response.headers()['content-type']).toContain('image/webp');
+});
+
+test('mobile navigation and filters preserve keyboard access and filter state', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Buka menu', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Tutup menu', exact: true })).toHaveAttribute(
+    'aria-expanded',
+    'true',
+  );
+  await expect(page.getByRole('link', { name: 'Beranda', exact: true })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Buka menu', exact: true })).toBeFocused();
+  await page.goto('/katalog?kategori=Payung');
+  await page.getByRole('button', { name: 'Filter produk', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Payung 4', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await page.getByRole('button', { name: 'Reset semua filter' }).click();
+  await expect(page).toHaveURL(/\/katalog$/);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Filter produk', exact: true })).toBeFocused();
+});
+test('storefront reflows across screen sizes and concept assets load', async ({ page }) => {
+  for (const width of [320, 360, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    for (const path of ['/', '/katalog', '/produk/payung-golf', '/penawaran']) {
+      await page.goto(path);
+      await expect(page.locator('footer')).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+    }
+  }
+  await page.goto('/');
+  const hero = page.getByAltText(
+    'Visual konsep payung navy dengan tekstur kain dan gagang kayu pada latar ivory',
+  );
+  await expect(hero).toBeVisible();
+  expect(
+    await hero.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0),
+  ).toBe(true);
+  await expect(page.getByText('Visual konsep', { exact: true })).toBeVisible();
+});
+
+test('quotation estimate recovers from a failed request without losing entered contact', async ({
+  page,
+}) => {
+  let fail = true;
+  await page.route('**/api/estimate', async (route) => {
+    if (fail)
+      await route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Coba kembali' }),
+      });
+    else await route.continue();
+  });
+  await page.goto('/penawaran');
+  await page.getByLabel('Nama perusahaan').fill('PT Tetap Tersimpan');
+  await expect(page.getByText('Estimasi belum dapat dimuat.', { exact: false })).toBeVisible();
+  fail = false;
+  await page.getByRole('button', { name: 'Coba estimasi lagi' }).click();
+  await expect(page.getByText('Estimasi total', { exact: true })).toBeVisible();
+  await expect(page.getByLabel('Nama perusahaan')).toHaveValue('PT Tetap Tersimpan');
 });
