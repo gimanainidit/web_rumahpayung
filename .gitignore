@@ -10,3 +10,17 @@ test-results/
 
 # Installed project-local design guidance (version recorded in skills-lock.json)
 .agents/
+
+# Secrets and runtime files that must never be committed
+admin-access.txt
+runtime.env
+deploy/*.env
+!deploy/*.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+backups/
+*.tar.gz
