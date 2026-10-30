@@ -14,6 +14,26 @@ Codespaces menjalankan demo dari build production. Setelah mengubah kode, hentik
 
 Konfigurasi Codespaces disediakan; pembuatan Codespace di akun GitHub belum dijalankan dari sesi ini. Ini adalah akses development, bukan deployment website publik.
 
+### Jika Codespace masuk recovery mode dan `npm` tidak ditemukan
+
+Konfigurasi awal sempat merujuk tag image yang tidak tersedia (`1-24-bookworm`). Konfigurasi sekarang memakai tag resmi `24-bookworm` yang diverifikasi tersedia. Recovery container berbasis Alpine tidak menyertakan npm; dependency aplikasi belum sempat diinstal.
+
+Di terminal recovery, tarik konfigurasi terbaru:
+
+```sh
+git pull --ff-only origin main
+```
+
+Lalu tekan **Ctrl/Cmd + Shift + P → Codespaces: Rebuild Container**. Tunggu pembuatan container dan `postCreateCommand` selesai. Setelah terminal normal kembali, jalankan:
+
+```sh
+node --version
+npm --version
+npm start
+```
+
+Buka **Ports → 3000 → Open in Browser**. Tidak perlu menginstal npm secara manual ke recovery container. Jika ada perubahan lokal yang menghalangi `git pull`, simpan perubahan itu terlebih dahulu; jangan gunakan reset paksa.
+
 ## Menjalankan di komputer sendiri
 
 Prasyarat: Node.js **24+**, npm. Chromium diperlukan hanya untuk browser test.
