@@ -9,3 +9,7 @@ edunesis.store {
 	}
 	reverse_proxy 127.0.0.1:3101
 }
+
+www.edunesis.store {
+	redir https://edunesis.store{uri} permanent
+}

@@ -48,7 +48,7 @@ Jangan menjalankan `admin:reset` tanpa alasan; itu mencabut semua sesi.
 
 ### Status aktivasi (2026-10-31)
 
-Snippet terpasang dan di-import dari `/etc/caddy/Caddyfile` (cadangan: `/etc/caddy/Caddyfile.bak-20261030235835`). `systemctl reload caddy` gagal di host ini (`status=226/NAMESPACE`, PrivateTmp); proses Caddy tidak terganggu. Gunakan reload lewat admin API:
+Snippet (apex + redirect `www` → apex) terpasang dan di-import dari `/etc/caddy/Caddyfile` (cadangan: `/etc/caddy/Caddyfile.bak-20261030235835`). `systemctl reload caddy` gagal di host ini (`status=226/NAMESPACE`, PrivateTmp); proses Caddy tidak terganggu. Gunakan reload lewat admin API:
 
 ```sh
 sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
