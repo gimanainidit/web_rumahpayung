@@ -1,0 +1,14 @@
+.git
+.github
+.agents
+.devcontainer
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.local
+*.sqlite*
+playwright-report
+test-results
+deploy/*.env

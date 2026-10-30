@@ -1,0 +1,11 @@
+# Snippet for the host Caddy (do not replace /etc/caddy/Caddyfile).
+# Install: sudo cp deploy/caddy/edunesis.store.caddy /etc/caddy/rumahpayung-dev.d/edunesis.store.caddy
+# and add `import "/etc/caddy/rumahpayung-dev.d/*.caddy"` to the Caddyfile.
+# Activate only after the DNS A record for edunesis.store points at this VPS.
+edunesis.store {
+	encode zstd gzip
+	request_body {
+		max_size 12MB
+	}
+	reverse_proxy 127.0.0.1:3101
+}
