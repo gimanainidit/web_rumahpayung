@@ -46,6 +46,17 @@ Jangan menjalankan `admin:reset` tanpa alasan; itu mencabut semua sesi.
 2. Pasang snippet, `sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile`, lalu `sudo systemctl reload caddy`.
 3. Aktifkan snippet hanya setelah DNS benar agar ACME tidak gagal berulang.
 
+### Status aktivasi (2026-10-31)
+
+Snippet terpasang dan di-import dari `/etc/caddy/Caddyfile` (cadangan: `/etc/caddy/Caddyfile.bak-20261030235835`). `systemctl reload caddy` gagal di host ini (`status=226/NAMESPACE`, PrivateTmp); proses Caddy tidak terganggu. Gunakan reload lewat admin API:
+
+```sh
+sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+sudo caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile --force
+```
+
+Resolver lokal VPS masih men-cache IP lama `edunesis.store`; uji dari server dengan `curl --resolve edunesis.store:443:43.157.230.75`.
+
 ## Batasan
 
 - Rate limit melihat IP proxy bersama (`trust proxy` belum diaktifkan); perubahan terpisah.
